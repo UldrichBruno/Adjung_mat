@@ -160,19 +160,23 @@ struct vector readVector(int size, string path2) {       //Ukládání matice na
     inFile.close();
     return v;
 }
-struct vector computeSolution(matrix a, vector v, matrix origin){
-    struct vector z;
-        for (int j = 0; j < v.size; j++){
-           a.array[j][a.size] = v.array[j];
-           double x_j = determinant(a)/determinant(origin);
-           z.array[j]=x_j;
-        }
-        return z;
-    }
+struct vector computeSolution(struct matrix origin, struct vector v){
 
-void printVector(struct vector v) {
-    for (int i = 0; i < v.size; i++) {
-            cout << setw(7) << setprecision(3) << v.array[i]<< " ";
+    struct vector z = v;
+    struct matrix a = origin;
+    for (int i = 0; i<v.size; i++) {
+        for (int j = 0; j < v.size; j++) {
+            a.array[j][i] = v.array[j];
+        }
+        z.array[i] = determinant(HST(a)) / determinant(HST(origin));
+        a = origin;
+    }
+        return z;
+}
+
+void printVector(struct vector z) {
+    for (int i = 0; i < z.size; i++) {
+            cout << setw(7) << setprecision(3) << z.array[i]<< " ";
         }
         cout << endl;
     cout <<"--------------------------------------------------"<< endl;

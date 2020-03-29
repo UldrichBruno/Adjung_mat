@@ -23,7 +23,7 @@ int main(){
     origin = readMatrix(inputDIM, path1);
     printMatrix(origin);
     printMatrix(inverse(origin));
-    struct vector solution = computeSolution(origin, readVector(inputDIM, path2), origin);
+    struct vector solution = computeSolution(origin, readVector(inputDIM, path2));
     printVector(solution);
 
 

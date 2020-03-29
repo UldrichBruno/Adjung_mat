@@ -13,11 +13,11 @@ struct vector{
     int size;
 };
 void printMatrix(struct matrix a);
-void printVector(struct vector v);
+void printVector(struct vector z);
 struct matrix readMatrix(int inputDIM, string path1);
 struct vector readVector(int inputDIM, string path2);
 struct matrix HST(struct matrix a);
 double determinant(struct matrix a);
 double cofactor(struct matrix a, int y, int x);
 struct matrix inverse(struct matrix a);
-struct vector computeSolution(matrix a, vector v ,matrix origin);
+struct vector computeSolution(struct matrix a, struct vector v);
