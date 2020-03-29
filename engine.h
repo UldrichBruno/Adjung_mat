@@ -4,7 +4,7 @@ using namespace std;
 #define MAX_SIZE_OF_MATRIX 50
 
 struct matrix{
-    float array[MAX_SIZE_OF_MATRIX][MAX_SIZE_OF_MATRIX];
+    double array[MAX_SIZE_OF_MATRIX][MAX_SIZE_OF_MATRIX];
     int size;
 };
 

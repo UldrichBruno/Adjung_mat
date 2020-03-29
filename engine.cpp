@@ -43,14 +43,14 @@ bool check(struct matrix a, int line, int col) {
 }
 
 bool checkSingular(int numOfSteps, int inputDIM){
-    return numOfSteps<inputDIM+3;
+    return numOfSteps < inputDIM + 3;
 }
 
-void zeroingElement(struct matrix a, int lineNullHead, int lineReadHead, float coef) {            //Vynuluje číslo pod diagonálou v závislosti na umístění čtecí hlavy.
+struct matrix zeroingElement(struct matrix a, int lineNullHead, int lineReadHead, float coef) {            //Vynuluje číslo pod diagonálou v závislosti na umístění čtecí hlavy.
     for (int i = 0; i < a.size; i++) {
         a.array[lineNullHead][i] = a.array[lineNullHead][i] + a.array[lineReadHead][i] * coef;
     }
-  //  numberOfstep++;
+return a;
 }
 
 double findCoef(struct matrix a, int lineNullHead, int lineReadHead) {
@@ -59,11 +59,11 @@ double findCoef(struct matrix a, int lineNullHead, int lineReadHead) {
 }
 
 
-void moveLine(struct matrix a, int lineReadHead) {        //Odsun řádku kvůli nevyhovujícímu nulovému prvku pod čtecí hlavou na poslední řádek.
+struct matrix moveLine(struct matrix a, int lineReadHead) {        //Odsun řádku kvůli nevyhovujícímu nulovému prvku pod čtecí hlavou na poslední řádek.
 
     double opmatrix[MAX_SIZE_OF_MATRIX];
 
-    for (int k = 0; k <a.size; k++) {
+    for (int k = 0; k < a.size; k++) {
         opmatrix[k] = a.array[lineReadHead][k];
     }
 
@@ -74,22 +74,23 @@ void moveLine(struct matrix a, int lineReadHead) {        //Odsun řádku kvůli
     }
 
     for (int k = 0; k < a.size; k++) {
-        a.array[a.size][k] = opmatrix[k];
+        a.array[a.size - 1][k] = opmatrix[k];
     }
+    return a;
 }
 
 struct matrix HST(struct matrix a) {             //Převod do horního stupňovitého tvaru.
     int numOfLoops = 0;
     Start:
     for (int i = 0; i < a.size; i++) {         //Čtecí hlava.
-        if (check(i, i) == 1) {
-            for (int x = i + 1; x < a.size; x++) {    //Nulovací hlava.
-                zeroingElement(struct matrix origin, x, i, float coef);
+        if (check(a, i, i) == 1) {
+            for (int j = i + 1; j < a.size; j++) {    //Nulovací hlava.
+                a = zeroingElement(a, j, i, findCoef(a, j, i));
             }
         } else {
             numOfLoops++;
-            if (checkSingular(numOfLoops, a.size)==1) {
-                moveLine(i);             //Přesuny řádků.
+            if (checkSingular(numOfLoops, a.size) == 1) {
+                a = moveLine(a, i);             //Přesuny řádků.
                 goto Start;
             } else{
                 cout << "Given matrix is singular!" << endl;
@@ -97,4 +98,5 @@ struct matrix HST(struct matrix a) {             //Převod do horního stupňovi
             }
         }
     }
+    return a;
 }
