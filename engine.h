@@ -8,9 +8,16 @@ struct matrix{
     int size;
 };
 
-bool check(int line, int col);
-bool checkSingular(int numOfSteps, int DIM);
-double findCoef(struct matrix a, int lineNullHead, int lineReadHead);
-void zeroingElement(struct matrix a, int lineNullHead, int lineReadHead ,float coef);
+struct vector{
+    double array[MAX_SIZE_OF_MATRIX];
+    int size;
+};
 void printMatrix(struct matrix a);
-struct matrix readMatrix(int inputDIM, string path);
+void printVector(struct vector v);
+struct matrix readMatrix(int inputDIM, string path1);
+struct vector readVector(int inputDIM, string path2);
+struct matrix HST(struct matrix a);
+double determinant(struct matrix a);
+double cofactor(struct matrix a, int y, int x);
+struct matrix inverse(struct matrix a);
+struct vector computeSolution(matrix a, vector v ,matrix origin);
