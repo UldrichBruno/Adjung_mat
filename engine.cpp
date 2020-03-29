@@ -5,8 +5,6 @@
 #include "engine.h"
 #include <cmath>
 
-
-
 void printMatrix(struct matrix a) {
     for (int i = 0; i < a.size; i++) {
         for (int j = 0; j < a.size; j++) {
@@ -17,7 +15,7 @@ void printMatrix(struct matrix a) {
     cout <<"--------------------------------------------------"<< endl;
 }
 
-struct matrix readMatrix(int size, string path1) {       //Ukládání matice na vstupu.
+struct matrix readMatrix(int size, string path1) {
     struct matrix a;
     a.size = size;
     int x;
@@ -39,7 +37,7 @@ struct matrix readMatrix(int size, string path1) {       //Ukládání matice na
     return a;
 }
 
-bool check(struct matrix a, int line, int col) {
+bool check(struct matrix a, int line, int col) {            //Catches zeroes to lead the function UTM to success.
     return a.array[line][col] != 0;
 }
 
@@ -47,20 +45,20 @@ bool checkSingular(int numOfSteps, int inputDIM){
     return numOfSteps < inputDIM + 3;
 }
 
-struct matrix zeroingElement(struct matrix a, int lineNullHead, int lineReadHead, double coef) {            //Vynuluje číslo pod diagonálou v závislosti na umístění čtecí hlavy.
+struct matrix zeroingElement(struct matrix a, int lineNullHead, int lineReadHead, double coef) {            // Makes zeroes under the main diagonal.
     for (int i = 0; i < a.size; i++) {
         a.array[lineNullHead][i] = a.array[lineNullHead][i] + a.array[lineReadHead][i] * coef;
     }
 return a;
 }
 
-double findCoef(struct matrix a, int lineNullHead, int lineReadHead) {
+double findCoef(struct matrix a, int lineNullHead, int lineReadHead) {                  // Finds a coefficient, which multiplies a number on the main diagonal to annul numbers below.
     double coef;
     return coef = (-1 * (a.array[lineNullHead][lineReadHead] / a.array[lineReadHead][lineReadHead]));
 }
 
 
-struct matrix moveLine(struct matrix a, int lineReadHead) {        //Odsun řádku kvůli nevyhovujícímu nulovému prvku pod čtecí hlavou na poslední řádek.
+struct matrix moveLine(struct matrix a, int lineReadHead) {
 
     double opmatrix[MAX_SIZE_OF_MATRIX];
 
@@ -80,19 +78,19 @@ struct matrix moveLine(struct matrix a, int lineReadHead) {        //Odsun řád
     return a;
 }
 
-struct matrix HST(struct matrix a) {             //Převod do horního stupňovitého tvaru.
+struct matrix UTM(struct matrix a) {             // Upper-triangular-matrix function.
     int numOfLoops = 0;
     Start:
-    for (int i = 0; i < a.size; i++) {         //Čtecí hlava.
+    for (int i = 0; i < a.size; i++) {         // ReadHead
         if (check(a, i, i) == 1) {
-            for (int j = i + 1; j < a.size; j++) {    //Nulovací hlava.
+            for (int j = i + 1; j < a.size; j++) {    //NullHead.
                double coef = findCoef(a, j, i);
                 a = zeroingElement(a, j, i, coef);
             }
         } else {
             numOfLoops++;
             if (checkSingular(numOfLoops, a.size) == 1) {
-                a = moveLine(a, i);             //Přesuny řádků.
+                a = moveLine(a, i);
                 goto Start;
             } else{
                 cout << "Given matrix is singular!" << endl;
@@ -109,6 +107,18 @@ double determinant(struct matrix a){
         det = det * a.array[i][i];
     }
     return det;
+}
+
+struct matrix inverse(struct matrix a){
+    struct matrix b;
+    b = UTM(a);
+    double det = determinant(b);
+    for (int i = 0; i < a.size; i++) {
+        for (int j = 0; j < a.size; j++) {
+            b.array[i][j] = cofactor (a, i, j) / det;
+        }
+    }
+    return b;
 }
 
 double cofactor(struct matrix a, int y, int x){
@@ -129,19 +139,7 @@ double cofactor(struct matrix a, int y, int x){
     return c;
 }
 
-struct matrix inverse(struct matrix a){
-    struct matrix b;
-    b = HST(a);
-    double det = determinant(b);
-    for (int i = 0; i < a.size; i++) {
-        for (int j = 0; j < a.size; j++) {
-            b.array[i][j] = cofactor (a, i, j) / det;
-            }
-        }
-    return b;
-}
-
-struct vector readVector(int size, string path2) {       //Ukládání matice na vstupu.
+struct vector readVector(int size, string path2) {
     struct vector v;
     v.size = size;
     int x;
@@ -168,7 +166,7 @@ struct vector computeSolution(struct matrix origin, struct vector v){
         for (int j = 0; j < v.size; j++) {
             a.array[j][i] = v.array[j];
         }
-        z.array[i] = determinant(HST(a)) / determinant(HST(origin));
+        z.array[i] = determinant(UTM(a)) / determinant(UTM(origin));
         a = origin;
     }
         return z;
@@ -181,8 +179,3 @@ void printVector(struct vector z) {
         cout << endl;
     cout <<"--------------------------------------------------"<< endl;
 }
-
-
-
-
-
